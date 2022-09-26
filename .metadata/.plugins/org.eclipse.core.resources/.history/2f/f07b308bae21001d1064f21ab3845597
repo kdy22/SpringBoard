@@ -1,0 +1,11 @@
+package org.zerock.controller;
+
+@Controller
+@Log4j
+public class UploadController {
+
+	@GetMapping("/uploadForm")
+	public void uploadForm() {
+		log.info("upload form");
+	}
+}

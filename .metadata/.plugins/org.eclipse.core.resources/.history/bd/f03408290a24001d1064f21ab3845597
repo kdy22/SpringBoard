@@ -1,0 +1,54 @@
+package org.zerock.service;
+
+import java.util.List;
+
+import org.zerock.domain.BoardAttachVO;
+import org.zerock.domain.BoardVO;
+import org.zerock.domain.Criteria;
+
+public interface BoardService {
+
+	public void register(BoardVO board);
+	
+	public BoardVO get(Long bno);
+	
+	public boolean modify(BoardVO board);
+	
+	public boolean remove(Long bno);
+	
+	//public List<BoardVO> getList(); <-- criteria 즉 페이징이 들어가면서 주석처리
+	
+	public List<BoardVO> getList(Criteria cri);
+	
+	public int getTotal(Criteria cri);
+	
+	public List<BoardAttachVO> getAttachList(Long bno);
+	
+private void deleteFiles(List<BoardAttachVO> attachList) {
+	    
+	    if(attachList == null || attachList.size() == 0) {
+	      return;
+	    }
+	    
+	    log.info("delete attach files...................");
+	    log.info(attachList);
+	    
+	    attachList.forEach(attach -> {
+	      try {        
+	        Path file  = Paths.get("C:\\upload\\"+attach.getUploadPath()+"\\" + attach.getUuid()+"_"+ attach.getFileName());
+	        
+	        Files.deleteIfExists(file);
+	        
+	        if(Files.probeContentType(file).startsWith("image")) {
+	        
+	          Path thumbNail = Paths.get("C:\\upload\\"+attach.getUploadPath()+"\\s_" + attach.getUuid()+"_"+ attach.getFileName());
+	          
+	          Files.delete(thumbNail);
+	        }
+	
+	      }catch(Exception e) {
+	        log.error("delete file error" + e.getMessage());
+	      }//end catch
+	    });//end foreachd
+	  }
+}
